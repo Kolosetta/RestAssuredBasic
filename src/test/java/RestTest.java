@@ -3,7 +3,6 @@ import dto.CreateUserResponse;
 import dto.UserFull;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -27,9 +26,11 @@ public class RestTest {
 
     @Test
     public void createUser(){
-        CreateUserRequest request = new CreateUserRequest();
-        request.setName("testName");
-        request.setJob("testJob");
+        CreateUserRequest request = CreateUserRequest.builder()
+                .name("testName")
+                .job("testJob")
+                .build();
+
 
         CreateUserResponse response = given()
                 .baseUri("https://reqres.in/api")
@@ -42,6 +43,4 @@ public class RestTest {
                 .isNotNull()
                 .extracting(CreateUserResponse::getName).isEqualTo(request.getName());
     }
-
-
 }
