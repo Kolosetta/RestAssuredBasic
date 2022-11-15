@@ -2,8 +2,10 @@ import dto.CreateUserRequest;
 import dto.CreateUserResponse;
 import dto.UserFull;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import steps.UsersSteps;
+import utils.RestWrapper;
 import utils.UserGenerator;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -13,6 +15,14 @@ import java.util.List;
 import static io.restassured.RestAssured.given;
 
 public class RestTest {
+
+    private static RestWrapper api;
+
+    @BeforeAll
+    public static void prepare(){
+        api = RestWrapper.loginAs("eve.holt@reqres.in","cityslicka");
+    }
+
     @Test
     public void getUsers(){
         List<UserFull> users = given()
