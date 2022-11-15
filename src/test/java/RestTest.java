@@ -3,6 +3,9 @@ import dto.CreateUserResponse;
 import dto.UserFull;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
+import steps.UsersSteps;
+import utils.UserGenerator;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -26,21 +29,21 @@ public class RestTest {
 
     @Test
     public void createUser(){
-        CreateUserRequest request = CreateUserRequest.builder()
-                .name("testName")
-                .job("testJob")
-                .build();
+        CreateUserRequest request = UserGenerator.getSimpleUserReq();
+        UsersSteps userApi = new UsersSteps();
+        CreateUserResponse response = userApi.createUser(request);
 
+        assertThat(response)
+                .isNotNull()
+                .extracting(CreateUserResponse::getName)
+                .isEqualTo(request.getName());
 
-        CreateUserResponse response = given()
+         /* CreateUserResponse response = given()
                 .baseUri("https://reqres.in/api")
                 .basePath("/users")
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when().post()
-                .then().extract().as(CreateUserResponse.class);
-        assertThat(response)
-                .isNotNull()
-                .extracting(CreateUserResponse::getName).isEqualTo(request.getName());
+                .then().extract().as(CreateUserResponse.class);*/
     }
 }
