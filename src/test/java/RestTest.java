@@ -1,8 +1,12 @@
 import dto.CreateUserRequest;
 import dto.CreateUserResponse;
 import dto.UserFull;
+import org.assertj.core.api.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import utils.RestWrapper;
 import utils.UserGenerator;
 
@@ -19,10 +23,17 @@ public class RestTest {
         api = RestWrapper.loginAs("eve.holt@reqres.in","cityslicka");
     }
 
+    //Ассертим, что лист юзеров содержит элемент с полем email george.bluth@reqres.in"
     @Test
     public void getUsers(){
-        //Ассертим, что лист юзеров содержит элемент с полем email george.bluth@reqres.in"
-        assertThat(api.userService.getUsers()).extracting(UserFull::getEmail).contains("george.bluth@reqres.in");
+        assertThat(api.userService.getUsersWithPage(1)).extracting(UserFull::getEmail).contains("george.bluth@reqres.in");
+    }
+
+    //Проверяет кол-во юзеров на каждой странице
+    @ParameterizedTest
+    @ValueSource(ints = {1,2})
+    public void getUsersCountOnEveryPage(int page){
+        Assertions.assertEquals(api.userService.getUsersWithPage(page).size(), 6);
     }
 
     @Test

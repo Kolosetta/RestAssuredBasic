@@ -23,9 +23,10 @@ public class UserService extends BaseService{
                 .as(CreateUserResponse.class);
     }
 
-    public List<UserFull> getUsers() {
+    public List<UserFull> getUsersWithPage(int page) {
         return given()
                 .spec(REQ_SPEC)
+                .queryParam("page", page)
                 .get()
                 .then().statusCode(200)
                 .extract().jsonPath().getList("data", UserFull.class);
