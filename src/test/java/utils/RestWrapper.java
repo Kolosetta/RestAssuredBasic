@@ -1,26 +1,24 @@
 package utils;
 
-import dto.UserLogin;
-import io.restassured.builder.RequestSpecBuilder;
+import dto.UserLoginRequest;
 import io.restassured.http.ContentType;
 import io.restassured.http.Cookies;
-import io.restassured.specification.RequestSpecification;
+import services.OrderService;
+import services.UserService;
+
 import static io.restassured.RestAssured.given;
 
 public class RestWrapper {
     private static final String BASE_URL = "https://reqres.in/api";
-    private static RequestSpecification REQ_SPEC;
     private Cookies cookies;
+
+    public UserService userService;
+    public OrderService orderService;
 
     private RestWrapper(Cookies cookies){
         this.cookies = cookies;
-
-        REQ_SPEC = new RequestSpecBuilder()
-                .addCookies(cookies)
-                .setBaseUri(BASE_URL)
-                .setBasePath("/users")
-                .setContentType(ContentType.JSON)
-                .build();
+        userService = new UserService(cookies);
+        orderService = new OrderService(cookies);
     }
 
     public static RestWrapper loginAs(String login, String password){
@@ -28,7 +26,7 @@ public class RestWrapper {
                 .contentType(ContentType.JSON)
                 .baseUri(BASE_URL)
                 .basePath("/login")
-                .body(new UserLogin(login, password))
+                .body(new UserLoginRequest(login, password))
                 .post()
                 .getDetailedCookies();
         return new RestWrapper(cookies);
